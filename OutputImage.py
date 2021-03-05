@@ -5,23 +5,28 @@ from PIL import Image, ImageDraw, ImageFont
 
 BASE_IMAGE_WIDTH = 5000
 BASE_LIMIT = 7000
-OUTLINE_SPACE = 40
 
-A3_WIDTH = 842 - OUTLINE_SPACE * 2
-A3_HEIGHT = 1191 - OUTLINE_SPACE * 2
-# Change for A4
-OUTLINE_SPACE = 10
-A3_WIDTH = 210 - OUTLINE_SPACE * 2
-A3_HEIGHT = 297 - OUTLINE_SPACE * 2
+A3_WIDTH = 842
+A3_HEIGHT = 1191
+
+A4_WIDTH = 210
+A4_HEIGHT = 297
+
+OUTPUT_WIDTH = A4_WIDTH
+OUTPUT_HEIGHT = A4_HEIGHT
+
+OUTLINE_SPACE = int(OUTPUT_HEIGHT / 30)
+IMAGE_WIDTH = OUTPUT_WIDTH - OUTLINE_SPACE * 2
+IMAGE_HEIGHT = OUTPUT_HEIGHT - OUTLINE_SPACE * 2
 
 INITIAL_FONT_SIZE = 5
 MIN_FONT_SIZE = 5
-#MIN_FONT_SIZE = 3
+MIN_FONT_SIZE = 3
 
 JPEG_SCALING = 3
-#JPEG_SCALING = 1
+JPEG_SCALING = 5
 
-NUMBERS_PER_COLOUR = 100
+NUMBERS_PER_COLOUR = 50 # up to maxDots / 8
 WHITE = (255, 255, 255)
 COLOURS = [(0, 0, 200), (50, 50, 50), (200, 0, 200), (200, 0, 0), (200, 100, 0), (0, 0, 0), (0, 200, 0), (0, 200, 200)]
 
@@ -46,10 +51,10 @@ class OutputImage():
 
         self.imageRatio = float(self.originalHeight) / float(self.originalWidth)
 
-        self.base = A3_WIDTH if originalHeight > originalWidth else A3_HEIGHT
-        otherBaseDimension = A3_HEIGHT if originalHeight > originalWidth else A3_WIDTH
-        mainDimension = originalWidth if originalWidth > originalHeight else originalHeight
-        otherDimension = originalHeight if originalWidth > originalHeight else originalWidth
+        self.base = IMAGE_WIDTH if originalHeight > originalWidth else IMAGE_HEIGHT
+        otherBaseDimension = IMAGE_HEIGHT if originalHeight > originalWidth else IMAGE_WIDTH
+        mainDimension = max(originalWidth, originalHeight)
+        otherDimension = min(originalWidth, originalHeight)
         baseScaling = float(self.base) / mainDimension
         if otherDimension * baseScaling > otherBaseDimension:
             otherDimensionScaling = float(otherBaseDimension) / otherDimension

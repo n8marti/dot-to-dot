@@ -3,7 +3,7 @@ import sys
 from DotToDot import makeDotToDot, makeMaxSizeDot
 
 MAX_DOTS_IN_IMAGE = 800
-MAX_DOTS_IN_IMAGE = 100
+MAX_DOTS_IN_IMAGE = 300
 
 arguments = len(sys.argv)
 

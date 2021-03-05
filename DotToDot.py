@@ -18,10 +18,8 @@ TEMP_IMG_NAME = "temp_img.jpg"
 GREEDY_SOLUTIONS_TO_TRY = 50
 
 def timeFunction(function, *args):
-    #start = time.clock()
     start = time.time()
     returnValue = function(*args)
-    #end = time.clock()
     end = time.time()
     print('--- ' + str(function.__name__) + ' --- Time: ' + str(end - start) + ' ---')
     return returnValue
@@ -104,13 +102,18 @@ def makeMaxSizeDot(fullFilePath, maxDots):
     # Repeat complete makeDotToDot process, decreasing image resolution, until
     # few enough dots
     #while(dotsInImage > maxDots and inputImageDimension > 300):
-    while(dotsInImage > maxDots and inputImageDimension > 201):
-        inputImageDimension -= 200
+    while dotsInImage > maxDots:
+        # Get ratio of dotsInImage / maxDots
+        oversized_ratio = dotsInImage / maxDots
+        reduction = int(oversized_ratio * 30)
+        print(f"\nRatio: {oversized_ratio}")
+        #inputImageDimension -= 200
+        inputImageDimension = max(inputImageDimension - reduction, 100)
         print('Image Dimensions now at: ' + str(inputImageDimension))
         imageData = Image.open(fullFilePath)
         width = imageData.width
         height = imageData.height
-        maxDimension = width if width > height else height
+        maxDimension = max(width, height)
         if (maxDimension > inputImageDimension):
             scaling = float(inputImageDimension) / maxDimension
             width = int(width * scaling)
