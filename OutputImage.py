@@ -1,4 +1,5 @@
 import math
+import os
 import cairocffi as cairo
 from PIL import Image, ImageDraw, ImageFont
 
@@ -8,11 +9,17 @@ OUTLINE_SPACE = 40
 
 A3_WIDTH = 842 - OUTLINE_SPACE * 2
 A3_HEIGHT = 1191 - OUTLINE_SPACE * 2
+# Change for A4
+OUTLINE_SPACE = 10
+A3_WIDTH = 210 - OUTLINE_SPACE * 2
+A3_HEIGHT = 297 - OUTLINE_SPACE * 2
 
 INITIAL_FONT_SIZE = 5
 MIN_FONT_SIZE = 5
+#MIN_FONT_SIZE = 3
 
 JPEG_SCALING = 3
+#JPEG_SCALING = 1
 
 NUMBERS_PER_COLOUR = 100
 WHITE = (255, 255, 255)
@@ -24,10 +31,18 @@ class OutputImage():
         self.points = points[:]
         self.originalWidth = originalWidth
         self.originalHeight = originalHeight
+
+        fileName = 'dots.jpg'
+        home = os.environ['HOME']
+        os.makedirs(home + '/out/jpg', exist_ok=True)
+        os.makedirs(home + '/out/pdf', exist_ok=True)
+        outPathJpg = home + '/out/jpg/' + fileName
+        outPathPdf = home + '/out/pdf/' + os.path.splitext(fileName)[0] + '.pdf'
+
         if not pdfOutput:
-            pdfOutput = "out/dots.pdf"
+            pdfOutput = outPathPdf
         if not jpgOutput:
-            jpgOutput = "out/dots.jpg"
+            jpgOutput = outPathJpg
 
         self.imageRatio = float(self.originalHeight) / float(self.originalWidth)
 
@@ -89,7 +104,9 @@ class OutputImage():
 
     def saveImage(self, path = None):
         if not path:
-            path = 'out/dots.jpg'
+            home = os.environ["HOME"]
+            os.makdirs(home + '/out', exist_ok=True)
+            path =  home + '/out/dots.jpg'
 
         self.image.save(path)
 
@@ -262,8 +279,11 @@ class OutputImage():
     def overlaps(self, textX, textY, width, height):
         for x in range(int(textX), int(textX + width + 1)):
             for y in range(int(textY), int(textY + height + 1)):
-                if self.image.getpixel((x, y)) != WHITE:
-                    return True
+                try:
+                    if self.image.getpixel((x, y)) != WHITE:
+                        return True
+                except IndexError:
+                    pass
         return False
 
     def pickNextColor(self):

@@ -18,17 +18,22 @@ TEMP_IMG_NAME = "temp_img.jpg"
 GREEDY_SOLUTIONS_TO_TRY = 50
 
 def timeFunction(function, *args):
-    start = time.clock()
+    #start = time.clock()
+    start = time.time()
     returnValue = function(*args)
-    end = time.clock()
-    print ('--- ' + str(function.__name__) + ' --- Time: ' + str(end - start) + ' ---')
+    #end = time.clock()
+    end = time.time()
+    print('--- ' + str(function.__name__) + ' --- Time: ' + str(end - start) + ' ---')
     return returnValue
 
 def makeDotToDot(fullFilePath, intermediateSteps = False):
     # Getting proper in/out names and image dimensions.
     fileName = os.path.split(fullFilePath)[-1]
-    outPathJpg = 'out/jpg/' + fileName
-    outPathPdf = 'out/pdf/' + os.path.splitext(fileName)[0] + '.pdf'
+    home = os.environ['HOME']
+    os.makedirs(home + '/out/jpg', exist_ok=True)
+    os.makedirs(home + '/out/pdf', exist_ok=True)
+    outPathJpg = home + '/out/jpg/' + fileName
+    outPathPdf = home + '/out/pdf/' + os.path.splitext(fileName)[0] + '.pdf'
 
     imageData = Image.open(fullFilePath)
     width = imageData.width
@@ -90,12 +95,16 @@ def makeMaxSizeDot(fullFilePath, maxDots):
     dotsInImage = maxDots + 1
 
     fileName = os.path.split(fullFilePath)[-1]
-    outPathJpg = 'out/jpg/' + fileName
-    outPathPdf = 'out/pdf/' + os.path.splitext(fileName)[0] + '.pdf'
+    home = os.environ['HOME']
+    os.makedirs(home + '/out/jpg', exist_ok=True)
+    os.makedirs(home + '/out/pdf', exist_ok=True)
+    outPathJpg = home + '/out/jpg/' + fileName
+    outPathPdf = home + '/out/pdf/' + os.path.splitext(fileName)[0] + '.pdf'
 
     # Repeat complete makeDotToDot process, decreasing image resolution, until
     # few enough dots
-    while(dotsInImage > maxDots and inputImageDimension > 300):
+    #while(dotsInImage > maxDots and inputImageDimension > 300):
+    while(dotsInImage > maxDots and inputImageDimension > 201):
         inputImageDimension -= 200
         print('Image Dimensions now at: ' + str(inputImageDimension))
         imageData = Image.open(fullFilePath)
